@@ -1,5 +1,6 @@
 import UIKit
 
+// TODO: - Таблицу отдельным файлом
 final class MainViewController: UIViewController {
     
     private var toDos = ToDo.mock
@@ -17,16 +18,21 @@ final class MainViewController: UIViewController {
         return $0
     }(UILabel())
     
+    @Autolayout private var test: UIButton = {
+        $0.setImage(UIImage(systemName: "plus"), for: .normal)
+        return $0
+    }(UIButton())
+    
     // TODO: - Добавить картинку "микрофона" справа
     // TODO: - Определить нужен ли вообще поиск?
-    @Autolayout private var searchBar: UISearchBar = {
-        $0.barStyle = .default
-        $0.placeholder = "Search"
-        //searchBar.delegate = self
-        $0.backgroundImage = UIImage()
-        $0.isTranslucent = true
-        return $0
-    }(UISearchBar())
+//    @Autolayout private var searchBar: UISearchBar = {
+//        $0.barStyle = .default
+//        $0.placeholder = "Search"
+//        //searchBar.delegate = self
+//        $0.backgroundImage = UIImage()
+//        $0.isTranslucent = true
+//        return $0
+//    }(UISearchBar())
     
     lazy var tableView: UITableView = {
         $0.delegate = self
@@ -37,32 +43,62 @@ final class MainViewController: UIViewController {
         return $0
     }(UITableView())
     
+    // TODO: Убирать нави панель только так?
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         setConstraints()
+        addActions()
     }
     
     private func setConstraints() {
         view.addSubview(titleLabel)
-        view.addSubview(searchBar)
+        view.addSubview(test)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            test.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            test.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
             
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+//            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+//            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
+    private func addActions() {
+        test.addTarget(self, action: #selector(addItem), for: .touchUpInside)
+    }
+    
+    @objc func addItem() {
+        // Добавляем новый элемент в массив
+        let todo = ToDo(toDo: "Покататься на велике", description: "Просто сесть и поехать", status: .inWork, dateAndTimeTheToDoWasCreated: .now)
+        toDos.append(todo)
+        
+        // Обновляем таблицу
+        tableView.reloadData()
+    }
+
+    
 }
 
 // MARK: - UITableViewDataSource

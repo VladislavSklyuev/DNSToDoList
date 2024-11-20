@@ -19,6 +19,8 @@
 		655EE2A02CEDE3DE005E6652 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE29F2CEDE3DE005E6652 /* MainViewController.swift */; };
 		655EE2AC2CEDF329005E6652 /* ToDoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE2AB2CEDF329005E6652 /* ToDoModel.swift */; };
 		655EE2B12CEDF817005E6652 /* ToDoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE2B02CEDF817005E6652 /* ToDoViewModel.swift */; };
+		65FEF51D2CEE3DF000363246 /* NextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FEF51C2CEE3DF000363246 /* NextVC.swift */; };
+		65FEF51F2CEE4DAC00363246 /* CustomTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FEF51E2CEE4DAC00363246 /* CustomTabBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		655EE29F2CEDE3DE005E6652 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		655EE2AB2CEDF329005E6652 /* ToDoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoModel.swift; sourceTree = "<group>"; };
 		655EE2B02CEDF817005E6652 /* ToDoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoViewModel.swift; sourceTree = "<group>"; };
+		65FEF51C2CEE3DF000363246 /* NextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextVC.swift; sourceTree = "<group>"; };
+		65FEF51E2CEE4DAC00363246 /* CustomTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +74,8 @@
 			children = (
 				655EE2902CEDE14A005E6652 /* App */,
 				655EE2922CEDE196005E6652 /* UIKitSupport */,
-				655EE2992CEDE297005E6652 /* Cells */,
 				655EE2912CEDE180005E6652 /* CoreData */,
+				655EE2992CEDE297005E6652 /* Cells */,
 				655EE29C2CEDE353005E6652 /* ToDos */,
 				655EE2852CEDE0EC005E6652 /* Assets.xcassets */,
 				655EE2872CEDE0EC005E6652 /* LaunchScreen.storyboard */,
@@ -137,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				655EE29F2CEDE3DE005E6652 /* MainViewController.swift */,
+				65FEF51E2CEE4DAC00363246 /* CustomTabBarViewController.swift */,
+				65FEF51C2CEE3DF000363246 /* NextVC.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -220,6 +226,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				655EE2B12CEDF817005E6652 /* ToDoViewModel.swift in Sources */,
+				65FEF51D2CEE3DF000363246 /* NextVC.swift in Sources */,
+				65FEF51F2CEE4DAC00363246 /* CustomTabBarViewController.swift in Sources */,
 				655EE2AC2CEDF329005E6652 /* ToDoModel.swift in Sources */,
 				655EE2982CEDE24A005E6652 /* CoreDataManager.swift in Sources */,
 				655EE2962CEDE1D1005E6652 /* CoreDataStack.swift in Sources */,
