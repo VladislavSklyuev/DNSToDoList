@@ -4,24 +4,24 @@ import UIKit
 final class MainViewController: UIViewController {
     
     private var toDos = ToDo.mock
-    
+
     // TODO: - строковые литералы в константы
     private enum Constants {
         static let heightForRowAt: CGFloat = 80
     }
     
-    @Autolayout private var titleLabel: UILabel = {
-        $0.text = "Задачи"
-        $0.font = UIFont.boldSystemFont(ofSize: 28)
-        $0.textAlignment = .left
-        $0.textColor = .white
-        return $0
-    }(UILabel())
+//    @Autolayout private var titleLabel: UILabel = {
+//        $0.text = "Задачи"
+//        $0.font = UIFont.boldSystemFont(ofSize: 28)
+//        $0.textAlignment = .left
+//        $0.textColor = .white
+//        return $0
+//    }(UILabel())
     
-    @Autolayout private var test: UIButton = {
-        $0.setImage(UIImage(systemName: "plus"), for: .normal)
-        return $0
-    }(UIButton())
+//    @Autolayout private var test: UIButton = {
+//        $0.setImage(UIImage(systemName: "plus"), for: .normal)
+//        return $0
+//    }(UIButton())
     
     // TODO: - Добавить картинку "микрофона" справа
     // TODO: - Определить нужен ли вообще поиск?
@@ -43,60 +43,82 @@ final class MainViewController: UIViewController {
         return $0
     }(UITableView())
     
-    // TODO: Убирать нави панель только так?
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         setConstraints()
-        addActions()
+        //addActions()
+        
+        navigationItem.title = "Задачи"
+        navigationItem.leftBarButtonItem?.tintColor = .white
+        navigationItem.rightBarButtonItem?.tintColor = .white
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+
     }
     
+    
     private func setConstraints() {
-        view.addSubview(titleLabel)
-        view.addSubview(test)
+//        view.addSubview(titleLabel)
+//        view.addSubview(test)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
-            
-            test.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            test.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
+//            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+//            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+//            
+//            test.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+//            test.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             
 //            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
 //            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 //            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
-    private func addActions() {
-        test.addTarget(self, action: #selector(addItem), for: .touchUpInside)
-    }
+//    private func addActions() {
+//        test.addTarget(self, action: #selector(showSheet), for: .touchUpInside)
+//    }
     
-    @objc func addItem() {
-        // Добавляем новый элемент в массив
-        let todo = ToDo(toDo: "Покататься на велике", description: "Просто сесть и поехать", status: .inWork, dateAndTimeTheToDoWasCreated: .now)
-        toDos.append(todo)
-        
-        // Обновляем таблицу
-        tableView.reloadData()
+    
+    @objc func addButtonTapped() {
+        let newVC = NextVC()
+        navigationController?.pushViewController(newVC, animated: true)
     }
+
+    
+    @objc func showSheet() {
+        
+        let detailViewController = NextVC() // Создайте экземпляр вашего контроллера
+        detailViewController.modalPresentationStyle = .formSheet // Установите стиль представления, если нужно
+        present(detailViewController, animated: true, completion: nil)
+
+
+//        let sheetVC = SheetViewController()
+//        
+//        // Настройка UISheetPresentationController
+//        if let sheet = sheetVC.sheetPresentationController {
+//            sheet.detents = [.medium(), .large()]
+//            sheet.prefersGrabberVisible = true
+//            sheet.largestUndimmedDetentIdentifier = .medium
+//        }
+//        present(sheetVC, animated: true, completion: nil)
+
+    }
+
+//
+//    @objc func addItem() {
+//        // Добавляем новый элемент в массив
+//        let todo = ToDo(toDo: "Покататься на велике", description: "Просто сесть и поехать", status: .inWork, dateAndTimeTheToDoWasCreated: .now)
+//        toDos.append(todo)
+//        
+//        // Обновляем таблицу
+//        tableView.reloadData()
+//    }
 
     
 }
