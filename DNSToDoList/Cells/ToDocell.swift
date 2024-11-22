@@ -48,7 +48,7 @@ final class ToDoCell: UITableViewCell {
         ])
     }
     
-    func configure(toDoTitle: String, toDoStatus: String, date: Date) {
+    func configureCell(toDoTitle: String, toDoStatus: String, date: Date) {
         briefDescriptionOfTheTodoLabel.text = toDoTitle
         todoStatusLabel.text = toDoStatus
         dateAndTimeTheToDoWasCreatedLabel.text = convert(date: date)

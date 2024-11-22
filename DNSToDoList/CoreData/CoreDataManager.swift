@@ -15,6 +15,7 @@ final class CoreDataManager: ToDoServiceProtocol {
         self.coreDataStack = coreDataStack
     }
     
+    // MARK: - Получение сущностей
     func fetchToDos() -> AnyPublisher<[ToDo], Error> {
         let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         
@@ -38,6 +39,7 @@ final class CoreDataManager: ToDoServiceProtocol {
 }
 
 extension CoreDataManager {
+    // MARK: - Сохранение сущностей
     func saveToDos(_ toDos: [ToDo]) {
         toDos.forEach { toDoToSave in
             let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
@@ -63,6 +65,7 @@ extension CoreDataManager {
         }
     }
     
+    // MARK: - Удаление сущностей
     func deleteToDo(withId id: Int) {
         let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
         let predicate = NSPredicate(format: "id == %d", Int32(id))

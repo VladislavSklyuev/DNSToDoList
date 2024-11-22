@@ -48,11 +48,15 @@ final class MainViewController: UIViewController {
         if gesture.state == .began {
             let location = gesture.location(in: tableView)
             if let indexPath = tableView.indexPathForRow(at: location) {
-                showAlert(forItemAt: indexPath)
+                
                 if let cell = tableView.cellForRow(at: indexPath) {
                     cell.backgroundColor = .gray
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.showAlert(forItemAt: indexPath)
+                }
             }
+
             let feedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
             feedbackGenerator.prepare()
             feedbackGenerator.impactOccurred()
@@ -66,15 +70,14 @@ final class MainViewController: UIViewController {
         }
     }
     
-    func showAlert(forItemAt indexPath: IndexPath) {
-        let alert = UIAlertController(title: "Долгое нажатие", message: "Вы нажали на \(viewModel.todos[indexPath.row])", preferredStyle: .alert)
+    //TODO: Переделать на отдельную View с выбором детализации и изменения статуса
+    private func showAlert(forItemAt indexPath: IndexPath) {
+        let alert = UIAlertController(title: "Задача", message: "\(viewModel.todos[indexPath.row].toDo), \(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)", preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
         present(alert, animated: true, completion: nil)
     }
-
-
     
     private func setConstraints() {
         view.addSubview(titleLabel)
@@ -141,20 +144,8 @@ private extension MainViewController {
                 self?.tableView.reloadData()
             }
             .store(in: &cancellables)
-        
-        // MARK: - Надо ли?
-        viewModel.$errorMessage
-            .receive(on: DispatchQueue.main)
-            .sink { errorMessage in
-                if errorMessage != nil {
-                    print("Error: (message)")
-                }
-            }
-            .store(in: &cancellables)
     }
 }
-
-
 
 // MARK: - UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
@@ -167,13 +158,12 @@ extension MainViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(toDoTitle: viewModel.todos[indexPath.row].toDo, toDoStatus: viewModel.todos[indexPath.row].status.rawValue, date: viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)
+        cell.configureCell(toDoTitle: viewModel.todos[indexPath.row].toDo, toDoStatus: viewModel.todos[indexPath.row].status.rawValue, date: viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)
         cell.backgroundColor = .black
         cell.selectionStyle = .none
         return cell
     }
 }
-
 
 // MARK: - UITableViewDelegate
 extension MainViewController: UITableViewDelegate {
@@ -187,6 +177,7 @@ extension MainViewController: UITableViewDelegate {
         print("Выбрано: \(viewModel.todos[indexPath.row])")
     }
     
+    // Удаление ячейки по свайпу
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let itemToDelete = viewModel.todos[indexPath.row]

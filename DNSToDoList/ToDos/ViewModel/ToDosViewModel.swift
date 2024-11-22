@@ -12,6 +12,7 @@ final class ToDosViewModel {
         self.toDoRepository = toDoRepository
         fetchToDos()
         saveToDos()
+        errorBinding()
     }
     
     private func fetchToDos() {
@@ -30,6 +31,18 @@ final class ToDosViewModel {
                 }
                 self?.todos.removeAll()
                 self?.todos = todos
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Надо ли?
+    func errorBinding() {
+        $errorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { errorMessage in
+                if errorMessage != nil {
+                    print("Error: (message)")
+                }
             }
             .store(in: &cancellables)
     }
