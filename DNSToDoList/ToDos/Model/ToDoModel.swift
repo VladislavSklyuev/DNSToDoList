@@ -1,6 +1,6 @@
 import Foundation
 
-struct ToDo: Identifiable {
+struct ToDo: Identifiable, Equatable {
     let id: Int
     let toDo: String
     let description: String

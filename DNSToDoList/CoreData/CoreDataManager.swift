@@ -4,6 +4,7 @@ import CoreData
 protocol ToDoServiceProtocol {
     func fetchToDos() -> AnyPublisher<[ToDo], Error>
     func saveToDos(_ toDos: [ToDo])
+    func deleteToDo(withId id: Int)
 }
 
 final class CoreDataManager: ToDoServiceProtocol {
@@ -34,26 +35,51 @@ final class CoreDataManager: ToDoServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+}
+
+extension CoreDataManager {
     func saveToDos(_ toDos: [ToDo]) {
         toDos.forEach { toDoToSave in
             let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
             let predicate = NSPredicate(format: "id == %d", Int32(toDoToSave.id))
             request.predicate = predicate
-            let objects = try! coreDataStack.managedObjectContext.fetch(request).first
-            if objects == nil {
-                coreDataStack.backgroundContext.perform {
-                    let savingToDo = ToDoCoreDataModel(context: self.coreDataStack.backgroundContext)
-                    savingToDo.id  = Int32(toDoToSave.id)
-                    savingToDo.toDo = toDoToSave.toDo
-                    savingToDo.desc = toDoToSave.description
-                    savingToDo.status = toDoToSave.status.rawValue
-                    savingToDo.dateAndTimeTheToDoWasCreated = toDoToSave.dateAndTimeTheToDoWasCreated
-                    self.coreDataStack.saveChanges()
+            do {
+                let objects = try coreDataStack.managedObjectContext.fetch(request).first
+                print("CoreDataObjects: \(String(describing: objects))")
+                if objects == nil {
+                    coreDataStack.backgroundContext.perform {
+                        let savingToDo = ToDoCoreDataModel(context: self.coreDataStack.backgroundContext)
+                        savingToDo.id  = Int32(toDoToSave.id)
+                        savingToDo.toDo = toDoToSave.toDo
+                        savingToDo.desc = toDoToSave.description
+                        savingToDo.status = toDoToSave.status.rawValue
+                        savingToDo.dateAndTimeTheToDoWasCreated = toDoToSave.dateAndTimeTheToDoWasCreated
+                        self.coreDataStack.saveChanges()
+                    }
                 }
+            } catch {
+                print("Error saving")
             }
         }
     }
+    
+    func deleteToDo(withId id: Int) {
+        let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
+        let predicate = NSPredicate(format: "id == %d", Int32(id))
+        request.predicate = predicate
+        
+        do {
+            let results = try coreDataStack.managedObjectContext.fetch(request)
+            
+            if let itemToDelete = results.first {
+                coreDataStack.managedObjectContext.delete(itemToDelete)
+                try coreDataStack.managedObjectContext.save()
+                print("Item with ID (id) deleted successfully.")
+            } else {
+                print("No item found with ID (id).")
+            }
+        } catch {
+            print("Error fetching or deleting item: (error)")
+        }
+    }
 }
-
-

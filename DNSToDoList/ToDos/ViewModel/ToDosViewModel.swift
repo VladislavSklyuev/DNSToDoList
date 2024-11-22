@@ -34,12 +34,11 @@ final class ToDosViewModel {
             .store(in: &cancellables)
     }
     
-    private func saveToDos() {
-        $todos
-            .receive(on: DispatchQueue.global(qos: .background))
-            .sink { [weak self] todos in
-                self?.toDoRepository.saveToDos(todos)
-            }
-            .store(in: &cancellables)
+    func saveToDos() {
+        toDoRepository.saveToDos(todos)
+    }
+    
+    func deleteToDo(withId id: Int) {
+        toDoRepository.deleteToDo(withId: id)
     }
 }

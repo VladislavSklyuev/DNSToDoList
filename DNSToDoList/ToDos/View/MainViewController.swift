@@ -88,6 +88,7 @@ private extension MainViewController {
                 // TODO: Возможно убрать во ViewModel
                 let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
                 self.viewModel.todos.append(newTodo)
+                self.viewModel.saveToDos()
             }
             
             let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
@@ -135,6 +136,7 @@ extension MainViewController: UITableViewDataSource {
         
         cell.configure(toDoTitle: viewModel.todos[indexPath.row].toDo, toDoStatus: viewModel.todos[indexPath.row].status.rawValue, date: viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)
         cell.backgroundColor = .black
+        cell.selectionStyle = .none
         return cell
     }
 }
@@ -149,6 +151,16 @@ extension MainViewController: UITableViewDelegate {
     
     // Обработка выбора ячейки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        print("Выбрано: \(viewModel.todos[indexPath.row])")
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let itemToDelete = viewModel.todos[indexPath.row]
+            guard let index = viewModel.todos.firstIndex(of: itemToDelete) else { return }
+            viewModel.todos.remove(at: index)
+            viewModel.deleteToDo(withId: itemToDelete.id)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
     }
 }

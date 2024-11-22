@@ -1,6 +1,7 @@
 import Combine
 
 class ToDosRepository: ToDoRepositoryProtocol {
+    
     private let toDoService: ToDoServiceProtocol
     
     init(userService: ToDoServiceProtocol) {
@@ -13,5 +14,9 @@ class ToDosRepository: ToDoRepositoryProtocol {
     
     func saveToDos(_ todos: [ToDo]) {
         toDoService.saveToDos(todos)
+    }
+    
+    func deleteToDo(withId id: Int) {
+        toDoService.deleteToDo(withId: id)
     }
 }
