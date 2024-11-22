@@ -84,8 +84,9 @@ private extension MainViewController {
                 guard let todo = alert.textFields![0].text,
                       let description = alert.textFields![1].text else { return }
                 guard !todo.isEmpty && !description.isEmpty else { return } // TODO: Можно придумать логику при отсутствии значений
-            
-                let newTodo = ToDo(toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
+                
+                // TODO: Возможно убрать во ViewModel
+                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
                 self.viewModel.todos.append(newTodo)
             }
             
@@ -98,14 +99,8 @@ private extension MainViewController {
         buttonToAddNewTodo.addAction(action, for: .touchUpInside)
     }
     
-    // MARK: - Подписки
+    // MARK: - Обновление таблицы
     func setupBindings() {
-//        viewModel.$todos
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] todos in
-//                self?.viewModel.saveToDos(todos)
-//            }
-//            .store(in: &cancellables)
         viewModel.$todos
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
@@ -113,6 +108,7 @@ private extension MainViewController {
             }
             .store(in: &cancellables)
         
+        // MARK: - Надо ли?
         viewModel.$errorMessage
             .receive(on: DispatchQueue.main)
             .sink { errorMessage in

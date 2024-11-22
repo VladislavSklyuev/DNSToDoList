@@ -12,6 +12,6 @@ class ToDosRepository: ToDoRepositoryProtocol {
     }
     
     func saveToDos(_ todos: [ToDo]) {
-        return toDoService.saveToDos(todos)
+        toDoService.saveToDos(todos)
     }
 }

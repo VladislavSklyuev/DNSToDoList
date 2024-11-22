@@ -1,8 +1,8 @@
 import Combine
 import Foundation
 
-class ToDosViewModel {
-    @Published var todos: [ToDo] = [.mock]
+final class ToDosViewModel {
+    @Published var todos: [ToDo] = []
     @Published var errorMessage: String?
     
     private let toDoRepository: ToDoRepositoryProtocol
@@ -14,9 +14,10 @@ class ToDosViewModel {
         saveToDos()
     }
     
-    func fetchToDos() {
+    private func fetchToDos() {
         toDoRepository
             .getToDos()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
                 case .failure(let error):
@@ -24,19 +25,21 @@ class ToDosViewModel {
                 default: break
                 }
             } receiveValue: { [weak self] todos in
+                todos.forEach { todo in
+                    print(todo.id)
+                }
                 self?.todos.removeAll()
                 self?.todos = todos
             }
             .store(in: &cancellables)
     }
     
-    func saveToDos() {
+    private func saveToDos() {
         $todos
-            .receive(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] todos in
                 self?.toDoRepository.saveToDos(todos)
             }
             .store(in: &cancellables)
-
     }
 }

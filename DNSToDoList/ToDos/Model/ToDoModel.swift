@@ -1,7 +1,7 @@
 import Foundation
 
 struct ToDo: Identifiable {
-    var id: Int?
+    let id: Int
     let toDo: String
     let description: String
     let status: Status
@@ -17,6 +17,6 @@ struct ToDo: Identifiable {
 
 extension ToDo {
     static var mock: ToDo {
-        ToDo(toDo: "Нарубить дров", description: "Взять деревья из леса, распилить их и нарубить", status: .inWork, dateAndTimeTheToDoWasCreated: Date.now)
+        ToDo(id: 0, toDo: "Нарубить дров", description: "Взять деревья из леса, распилить их и нарубить", status: .inWork, dateAndTimeTheToDoWasCreated: Date.now)
     }
 }
