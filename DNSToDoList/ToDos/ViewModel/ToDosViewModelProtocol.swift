@@ -1,8 +1,6 @@
-//
-//  ToDosViewModelProtocol.swift
-//  DNSToDoList
-//
-//  Created by Владислав Склюев on 22.11.2024.
-//
+import Combine
 
-import Foundation
+protocol ToDoRepositoryProtocol {
+    func getToDos() -> AnyPublisher<[ToDo], Error>
+    func saveToDos(_ todos: [ToDo])
+}

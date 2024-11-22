@@ -1,9 +1,11 @@
 import UIKit
+import Combine
 
 // TODO: - Таблицу отдельным файлом
 final class MainViewController: UIViewController {
     
-    private var toDos = ToDo.mock
+    private var viewModel: ToDosViewModel = ToDosViewModel(toDoRepository: ToDosRepository(userService: CoreDataManager(coreDataStack: CoreDataStack())))
+    private var cancellables = Set<AnyCancellable>()
 
     // TODO: - строковые литералы в константы
     private enum Constants {
@@ -37,6 +39,7 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .black
         setConstraints()
         creatingNewTodo()
+        setupBindings()
     }
     
     
@@ -60,8 +63,10 @@ final class MainViewController: UIViewController {
     }
 }
 
-// MARK: - Добавление новой задачи
+
 private extension MainViewController {
+    
+    // MARK: - Добавление новой задачи
     func creatingNewTodo() {
         let action = UIAction { _ in
             let alert = UIAlertController(title: "Новая задача", message: "Создайте новую задачу", preferredStyle: .alert)
@@ -81,9 +86,7 @@ private extension MainViewController {
                 guard !todo.isEmpty && !description.isEmpty else { return } // TODO: Можно придумать логику при отсутствии значений
             
                 let newTodo = ToDo(toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
-                self.toDos.append(newTodo)
-                
-                self.tableView.reloadData()
+                self.viewModel.todos.append(newTodo)
             }
             
             let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
@@ -94,12 +97,39 @@ private extension MainViewController {
         }
         buttonToAddNewTodo.addAction(action, for: .touchUpInside)
     }
+    
+    // MARK: - Подписки
+    func setupBindings() {
+//        viewModel.$todos
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] todos in
+//                self?.viewModel.saveToDos(todos)
+//            }
+//            .store(in: &cancellables)
+        viewModel.$todos
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$errorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { errorMessage in
+                if errorMessage != nil {
+                    print("Error: (message)")
+                }
+            }
+            .store(in: &cancellables)
+    }
 }
+
+
 
 // MARK: - UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return toDos.count
+        return viewModel.todos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,7 +137,7 @@ extension MainViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(toDoTitle: toDos[indexPath.row].toDo, toDoStatus: toDos[indexPath.row].status.rawValue, date: toDos[indexPath.row].dateAndTimeTheToDoWasCreated)
+        cell.configure(toDoTitle: viewModel.todos[indexPath.row].toDo, toDoStatus: viewModel.todos[indexPath.row].status.rawValue, date: viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)
         cell.backgroundColor = .black
         return cell
     }
