@@ -40,8 +40,41 @@ final class MainViewController: UIViewController {
         setConstraints()
         creatingNewTodo()
         setupBindings()
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+        tableView.addGestureRecognizer(longPressGesture)
     }
     
+    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let location = gesture.location(in: tableView)
+            if let indexPath = tableView.indexPathForRow(at: location) {
+                showAlert(forItemAt: indexPath)
+                if let cell = tableView.cellForRow(at: indexPath) {
+                    cell.backgroundColor = .gray
+                }
+            }
+            let feedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
+            feedbackGenerator.prepare()
+            feedbackGenerator.impactOccurred()
+        } else {
+            let location = gesture.location(in: tableView)
+            if let indexPath = tableView.indexPathForRow(at: location) {
+                if let cell = tableView.cellForRow(at: indexPath) {
+                    cell.backgroundColor = .black
+                }
+            }
+        }
+    }
+    
+    func showAlert(forItemAt indexPath: IndexPath) {
+        let alert = UIAlertController(title: "Долгое нажатие", message: "Вы нажали на \(viewModel.todos[indexPath.row])", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
+
+
     
     private func setConstraints() {
         view.addSubview(titleLabel)
