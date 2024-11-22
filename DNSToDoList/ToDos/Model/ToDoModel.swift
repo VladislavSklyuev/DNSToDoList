@@ -1,7 +1,7 @@
 import Foundation
 
 struct ToDo: Identifiable {
-    var id: UUID?
+    var id: Int?
     let toDo: String
     let description: String
     let status: Status
