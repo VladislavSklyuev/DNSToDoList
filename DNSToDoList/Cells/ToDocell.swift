@@ -57,7 +57,7 @@ final class ToDoCell: UITableViewCell {
     // TODO: Убрать остюда
     func convert(date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
         let dateString = formatter.string(from: date)
         return dateString
     }
