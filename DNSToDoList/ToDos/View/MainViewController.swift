@@ -74,7 +74,32 @@ final class MainViewController: UIViewController {
     private func showAlert(forItemAt indexPath: IndexPath) {
         let alert = UIAlertController(title: "Задача", message: "\(viewModel.todos[indexPath.row].toDo), \(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)", preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        let currentStatusToDo = viewModel.todos[indexPath.row].status
+        
+        switch currentStatusToDo {
+        case .newToDo:
+            let okAction = UIAlertAction(title: "Взять в работу", style: .default) { _ in
+                // TODO: Реализация логики замены статуса
+            }
+            
+            let deleteAction = UIAlertAction(title: "Удалить задачу", style: .destructive) { _ in
+                // TODO: Реализация логики замены статуса
+            }
+            
+            alert.addAction(okAction)
+            alert.addAction(deleteAction)
+        case .inWork:
+            let completedToDo = UIAlertAction(title: "Выполнить", style: .default) { _ in
+                // TODO: Реализация логики замены статуса
+            }
+            alert.addAction(completedToDo)
+        case .completed:
+            let completedToDo = UIAlertAction(title: "Ок", style: .default) { _ in
+                // TODO: Реализация логики замены статуса
+            }
+            alert.addAction(completedToDo)
+            break
+        }
         
         present(alert, animated: true, completion: nil)
     }
@@ -122,7 +147,7 @@ private extension MainViewController {
                 guard !todo.isEmpty && !description.isEmpty else { return } // TODO: Можно придумать логику при отсутствии значений
                 
                 // TODO: Возможно убрать во ViewModel
-                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
+                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .completed, dateAndTimeTheToDoWasCreated: .now)
                 self.viewModel.todos.append(newTodo)
                 self.viewModel.saveToDos()
             }
