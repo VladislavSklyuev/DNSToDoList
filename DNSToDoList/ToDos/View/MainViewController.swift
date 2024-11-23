@@ -83,6 +83,7 @@ final class MainViewController: UIViewController {
         
         let currentStatusToDo = viewModel.todos[indexPath.row].status
         
+        // TODO: - Название действий кнопок в константы
         switch currentStatusToDo {
             
         case .newToDo:
