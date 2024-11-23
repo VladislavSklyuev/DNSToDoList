@@ -5,6 +5,7 @@ protocol ToDoServiceProtocol {
     func fetchToDos() -> AnyPublisher<[ToDo], Error>
     func saveToDos(_ toDos: [ToDo])
     func deleteToDo(withId id: Int)
+    func updateTodo(_ todo: ToDo)
 }
 
 final class CoreDataManager: ToDoServiceProtocol {
@@ -83,6 +84,22 @@ extension CoreDataManager {
             }
         } catch {
             print("Error fetching or deleting item: (error)")
+        }
+    }
+    
+    func updateTodo(_ todo: ToDo) {
+        let fetchRequest: NSFetchRequest<ToDoCoreDataModel> = ToDoCoreDataModel.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %d", Int32(todo.id))
+        
+        do {
+            let results = try coreDataStack.managedObjectContext.fetch(fetchRequest)
+            if let toDoEntity = results.first {
+                toDoEntity.status = todo.status.rawValue
+                try coreDataStack.managedObjectContext.save()
+                print("Обновление сущности успешно")
+            }
+        } catch {
+            print("Ошибка при обновлении: (error)")
         }
     }
 }

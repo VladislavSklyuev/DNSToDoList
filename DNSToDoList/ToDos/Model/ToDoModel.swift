@@ -4,7 +4,7 @@ struct ToDo: Identifiable, Equatable {
     let id: Int
     let toDo: String
     let description: String
-    let status: Status
+    var status: Status
     let dateAndTimeTheToDoWasCreated: Date
     
     // TODO: Должно быть тут?

@@ -8,8 +8,14 @@ final class MainViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     // TODO: - строковые литералы в константы
-    private enum Constants {
+    private enum SizeConstants {
         static let heightForRowAt: CGFloat = 80
+        static let titleLabelTopAnchor: CGFloat = 24
+        static let titleLabelLeadingAnchor: CGFloat = 12
+        static let buttonToAddNewTodoTrailingAnchor: CGFloat = -12
+        static let tableViewTopAnchor: CGFloat = 8
+        static let tableViewLeadingAnchor: CGFloat = 8
+        static let tableViewTrailingAnchor: CGFloat = -8
     }
     
     @Autolayout private var titleLabel: UILabel = {
@@ -44,6 +50,7 @@ final class MainViewController: UIViewController {
         tableView.addGestureRecognizer(longPressGesture)
     }
     
+    // MARK: - Обработка долгого нажатия на ячейку
     @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             let location = gesture.location(in: tableView)
@@ -72,35 +79,53 @@ final class MainViewController: UIViewController {
     
     //TODO: Переделать на отдельную View с выбором детализации и изменения статуса
     private func showAlert(forItemAt indexPath: IndexPath) {
-        let alert = UIAlertController(title: "Задача", message: "\(viewModel.todos[indexPath.row].toDo), \(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "\(viewModel.todos[indexPath.row].toDo)", message: "\(viewModel.todos[indexPath.row].description)\n\(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)", preferredStyle: .alert)
         
         let currentStatusToDo = viewModel.todos[indexPath.row].status
         
         switch currentStatusToDo {
+            
         case .newToDo:
-            let okAction = UIAlertAction(title: "Взять в работу", style: .default) { _ in
-                // TODO: Реализация логики замены статуса
+            
+            let takeOnTodo = UIAlertAction(title: "Взять в работу", style: .default) { _ in
+                self.viewModel.todos[indexPath.row].status = .inWork
+                guard let index = self.viewModel.todos.firstIndex(of: self.viewModel.todos[indexPath.row]) else { return } // TODO: В отдельную функцию
+                let todo = self.viewModel.todos[index]
+                self.viewModel.updateToDo(todo)
             }
             
             let deleteAction = UIAlertAction(title: "Удалить задачу", style: .destructive) { _ in
-                // TODO: Реализация логики замены статуса
+                let itemToDelete = self.viewModel.todos[indexPath.row]
+                guard let index = self.viewModel.todos.firstIndex(of: itemToDelete) else { return } // TODO: В отдельную функцию
+                self.viewModel.todos.remove(at: index)
+                self.viewModel.deleteToDo(withId: itemToDelete.id)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
             }
             
-            alert.addAction(okAction)
+            let cancelAction = UIAlertAction(title: "Отменить", style: .cancel) { _ in }
+            
+            alert.addAction(takeOnTodo)
             alert.addAction(deleteAction)
+            alert.addAction(cancelAction)
+            
         case .inWork:
-            let completedToDo = UIAlertAction(title: "Выполнить", style: .default) { _ in
-                // TODO: Реализация логики замены статуса
+            
+            let completeTheToDo = UIAlertAction(title: "Выполнить", style: .default) { _ in
+                self.viewModel.todos[indexPath.row].status = .completed
+                guard let index = self.viewModel.todos.firstIndex(of: self.viewModel.todos[indexPath.row]) else { return }// TODO: В отдельную функцию
+                let todo = self.viewModel.todos[index]
+                self.viewModel.updateToDo(todo)
             }
-            alert.addAction(completedToDo)
+            
+            let cancelAction = UIAlertAction(title: "Отменить", style: .cancel) { _ in }
+            alert.addAction(completeTheToDo)
+            alert.addAction(cancelAction)
+            
         case .completed:
-            let completedToDo = UIAlertAction(title: "Ок", style: .default) { _ in
-                // TODO: Реализация логики замены статуса
-            }
-            alert.addAction(completedToDo)
-            break
+            
+            let okAction = UIAlertAction(title: "Ок", style: .default) { _ in }
+            alert.addAction(okAction)
         }
-        
         present(alert, animated: true, completion: nil)
     }
     
@@ -110,15 +135,15 @@ final class MainViewController: UIViewController {
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: SizeConstants.titleLabelTopAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SizeConstants.titleLabelLeadingAnchor),
             
             buttonToAddNewTodo.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            buttonToAddNewTodo.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            buttonToAddNewTodo.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: SizeConstants.buttonToAddNewTodoTrailingAnchor),
             
-            tableView.topAnchor.constraint(equalTo: buttonToAddNewTodo.bottomAnchor, constant: 8),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            tableView.topAnchor.constraint(equalTo: buttonToAddNewTodo.bottomAnchor, constant: SizeConstants.tableViewTopAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SizeConstants.tableViewLeadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: SizeConstants.tableViewTrailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -147,7 +172,7 @@ private extension MainViewController {
                 guard !todo.isEmpty && !description.isEmpty else { return } // TODO: Можно придумать логику при отсутствии значений
                 
                 // TODO: Возможно убрать во ViewModel
-                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .completed, dateAndTimeTheToDoWasCreated: .now)
+                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
                 self.viewModel.todos.append(newTodo)
                 self.viewModel.saveToDos()
             }
@@ -194,22 +219,23 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: UITableViewDelegate {
     // Высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.heightForRowAt
+        return SizeConstants.heightForRowAt
     }
     
     // Обработка выбора ячейки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Выбрано: \(viewModel.todos[indexPath.row])")
+        //print("Выбрано: \(viewModel.todos[indexPath.row])")
     }
     
     // Удаление ячейки по свайпу
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let itemToDelete = viewModel.todos[indexPath.row]
-            guard let index = viewModel.todos.firstIndex(of: itemToDelete) else { return }
-            viewModel.todos.remove(at: index)
-            viewModel.deleteToDo(withId: itemToDelete.id)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-    }
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        guard viewModel.todos[indexPath.row].status.rawValue == "Новая задача" else { return }
+//        if editingStyle == .delete {
+//            let itemToDelete = viewModel.todos[indexPath.row]
+//            guard let index = viewModel.todos.firstIndex(of: itemToDelete) else { return }
+//            viewModel.todos.remove(at: index)
+//            viewModel.deleteToDo(withId: itemToDelete.id)
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//        }
+//    }
 }

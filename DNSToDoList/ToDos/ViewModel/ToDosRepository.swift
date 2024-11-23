@@ -19,4 +19,8 @@ class ToDosRepository: ToDoRepositoryProtocol {
     func deleteToDo(withId id: Int) {
         toDoService.deleteToDo(withId: id)
     }
+    
+    func updateTodo(_ todo: ToDo) {
+        toDoService.updateTodo(todo)
+    }
 }

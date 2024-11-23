@@ -54,4 +54,8 @@ final class ToDosViewModel {
     func deleteToDo(withId id: Int) {
         toDoRepository.deleteToDo(withId: id)
     }
+    
+    func updateToDo(_ todo: ToDo) {
+        toDoRepository.updateTodo(todo)
+    }
 }
