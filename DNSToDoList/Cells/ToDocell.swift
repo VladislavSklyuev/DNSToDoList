@@ -2,32 +2,38 @@ import UIKit
 
 
 final class ToDoCell: UITableViewCell {
-    // TODO: Проверить все отступы и размеры шрифтов
-    @Autolayout private var checkImage: UIImageView = {
-        $0.image = UIImage(systemName: "checkmark.circle.fill")
-        return $0
-    }(UIImageView())
     
-    @Autolayout private var briefDescriptionOfTheTodoLabel: UILabel = {
-        $0.font = UIFont.systemFont(ofSize: 20)
+    private enum SizeConstants {
+        static let descriptionLabelSize: CGFloat = 20
+        static let todoStatusLabelSize: CGFloat = 14
+        static let dateToDoLabelSize: CGFloat = 12
+        static let todoStatusLabelNumberOfLines = 2
+        static let toDoWasCreatedLabelNumberOfLines = 1
+        static let spacingVStack: CGFloat = 4
+        static let vStackTopAnchor: CGFloat = 12
+        static let vStackLeadingAnchor: CGFloat = 8
+    }
+    
+    // TODO: Проверить все отступы и размеры шрифтов
+    @Autolayout private var descriptionLabel: UILabel = {
+        $0.font = UIFont.systemFont(ofSize: SizeConstants.descriptionLabelSize)
         $0.textAlignment = .left
-        $0.textColor = .white
+        $0.textColor = .black
         return $0
     }(UILabel())
     
     @Autolayout private var todoStatusLabel: UILabel = {
-        $0.numberOfLines = 2
-        $0.font = UIFont.systemFont(ofSize: 14)
+        $0.numberOfLines = SizeConstants.todoStatusLabelNumberOfLines
+        $0.font = UIFont.systemFont(ofSize: SizeConstants.todoStatusLabelSize)
         $0.textAlignment = .left
-        $0.textColor = .white
         return $0
     }(UILabel())
     
     @Autolayout private var dateAndTimeTheToDoWasCreatedLabel: UILabel = {
-        $0.numberOfLines = 1
-        $0.font = UIFont.systemFont(ofSize: 12)
+        $0.numberOfLines = SizeConstants.toDoWasCreatedLabelNumberOfLines
+        $0.font = UIFont.systemFont(ofSize: SizeConstants.dateToDoLabelSize)
         $0.textAlignment = .left
-        $0.textColor = .white
+        $0.textColor = .black
         return $0
     }(UILabel())
     
@@ -35,23 +41,37 @@ final class ToDoCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setConstraints()
     }
-        
+    
     private func setConstraints() {
-        let vStack = UIStackView(views: [briefDescriptionOfTheTodoLabel, todoStatusLabel, dateAndTimeTheToDoWasCreatedLabel], axis: .vertical, spacing: 4, alignment: .leading)
+        let vStack = UIStackView(views: [descriptionLabel,
+                                         todoStatusLabel,
+                                         dateAndTimeTheToDoWasCreatedLabel],
+                                 axis: .vertical,
+                                 spacing: SizeConstants.spacingVStack,
+                                 alignment: .leading)
         addSubview(vStack)
         
-        vStack.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
-            vStack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 12),
-            vStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8)
+            vStack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor,
+                                        constant: SizeConstants.vStackTopAnchor),
+            vStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
+                                            constant: SizeConstants.vStackLeadingAnchor)
         ])
     }
     
     func configureCell(toDoTitle: String, toDoStatus: String, date: Date) {
-        briefDescriptionOfTheTodoLabel.text = toDoTitle
+        descriptionLabel.text = toDoTitle
         todoStatusLabel.text = toDoStatus
-        dateAndTimeTheToDoWasCreatedLabel.text = date.convert(date: date)
+        switch toDoStatus {
+        case "Новая задача":
+            todoStatusLabel.textColor = .systemGreen
+        case "В работе":
+            todoStatusLabel.textColor = .systemPurple
+        default:
+            todoStatusLabel.textColor = .systemGray
+        }
+        
+        dateAndTimeTheToDoWasCreatedLabel.text = date.toString()
     }
     
     required init?(coder: NSCoder) {
@@ -62,7 +82,7 @@ final class ToDoCell: UITableViewCell {
 import SwiftUI
 
 struct ToDoCellProvider: PreviewProvider {
-
+    
     static var previews: some View {
         ContainerView().background(.white).edgesIgnoringSafeArea(.all)
     }
