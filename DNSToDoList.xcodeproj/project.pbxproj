@@ -18,7 +18,12 @@
 		655EE29B2CEDE319005E6652 /* ToDocell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE29A2CEDE319005E6652 /* ToDocell.swift */; };
 		655EE2A02CEDE3DE005E6652 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE29F2CEDE3DE005E6652 /* MainViewController.swift */; };
 		655EE2AC2CEDF329005E6652 /* ToDoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE2AB2CEDF329005E6652 /* ToDoModel.swift */; };
-		655EE2B12CEDF817005E6652 /* ToDoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655EE2B02CEDF817005E6652 /* ToDoViewModel.swift */; };
+		65769BC42CF0AE5B0014C1A2 /* ToDosViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65769BC32CF0AE5B0014C1A2 /* ToDosViewModelProtocol.swift */; };
+		65769BC62CF0B86C0014C1A2 /* ToDosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65769BC52CF0B86C0014C1A2 /* ToDosRepository.swift */; };
+		65769BC82CF0B8B90014C1A2 /* ToDosViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65769BC72CF0B8B90014C1A2 /* ToDosViewModel.swift */; };
+		65A213E52CF36305003E1899 /* ExtUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A213E42CF36305003E1899 /* ExtUIView.swift */; };
+		65A213E72CF36348003E1899 /* ExtUIStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A213E62CF36348003E1899 /* ExtUIStackView.swift */; };
+		65A213E92CF364A4003E1899 /* ExtDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A213E82CF364A4003E1899 /* ExtDate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +40,12 @@
 		655EE29A2CEDE319005E6652 /* ToDocell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDocell.swift; sourceTree = "<group>"; };
 		655EE29F2CEDE3DE005E6652 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		655EE2AB2CEDF329005E6652 /* ToDoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoModel.swift; sourceTree = "<group>"; };
-		655EE2B02CEDF817005E6652 /* ToDoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoViewModel.swift; sourceTree = "<group>"; };
+		65769BC32CF0AE5B0014C1A2 /* ToDosViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDosViewModelProtocol.swift; sourceTree = "<group>"; };
+		65769BC52CF0B86C0014C1A2 /* ToDosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDosRepository.swift; sourceTree = "<group>"; };
+		65769BC72CF0B8B90014C1A2 /* ToDosViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDosViewModel.swift; sourceTree = "<group>"; };
+		65A213E42CF36305003E1899 /* ExtUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIView.swift; sourceTree = "<group>"; };
+		65A213E62CF36348003E1899 /* ExtUIStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIStackView.swift; sourceTree = "<group>"; };
+		65A213E82CF364A4003E1899 /* ExtDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtDate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +79,10 @@
 			isa = PBXGroup;
 			children = (
 				655EE2902CEDE14A005E6652 /* App */,
+				65A213EA2CF364BB003E1899 /* Helpers */,
 				655EE2922CEDE196005E6652 /* UIKitSupport */,
-				655EE2992CEDE297005E6652 /* Cells */,
 				655EE2912CEDE180005E6652 /* CoreData */,
+				655EE2992CEDE297005E6652 /* Cells */,
 				655EE29C2CEDE353005E6652 /* ToDos */,
 				655EE2852CEDE0EC005E6652 /* Assets.xcassets */,
 				655EE2872CEDE0EC005E6652 /* LaunchScreen.storyboard */,
@@ -103,6 +114,8 @@
 			isa = PBXGroup;
 			children = (
 				655EE2932CEDE1B5005E6652 /* Autolayout.swift */,
+				65A213E42CF36305003E1899 /* ExtUIView.swift */,
+				65A213E62CF36348003E1899 /* ExtUIStackView.swift */,
 			);
 			path = UIKitSupport;
 			sourceTree = "<group>";
@@ -144,9 +157,19 @@
 		655EE2AF2CEDF7A3005E6652 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				655EE2B02CEDF817005E6652 /* ToDoViewModel.swift */,
+				65769BC32CF0AE5B0014C1A2 /* ToDosViewModelProtocol.swift */,
+				65769BC72CF0B8B90014C1A2 /* ToDosViewModel.swift */,
+				65769BC52CF0B86C0014C1A2 /* ToDosRepository.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		65A213EA2CF364BB003E1899 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				65A213E82CF364A4003E1899 /* ExtDate.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,14 +242,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				655EE2B12CEDF817005E6652 /* ToDoViewModel.swift in Sources */,
+				65769BC82CF0B8B90014C1A2 /* ToDosViewModel.swift in Sources */,
+				65A213E72CF36348003E1899 /* ExtUIStackView.swift in Sources */,
+				65A213E52CF36305003E1899 /* ExtUIView.swift in Sources */,
 				655EE2AC2CEDF329005E6652 /* ToDoModel.swift in Sources */,
+				65769BC42CF0AE5B0014C1A2 /* ToDosViewModelProtocol.swift in Sources */,
 				655EE2982CEDE24A005E6652 /* CoreDataManager.swift in Sources */,
 				655EE2962CEDE1D1005E6652 /* CoreDataStack.swift in Sources */,
 				655EE2942CEDE1B5005E6652 /* Autolayout.swift in Sources */,
 				655EE29B2CEDE319005E6652 /* ToDocell.swift in Sources */,
+				65A213E92CF364A4003E1899 /* ExtDate.swift in Sources */,
 				655EE27A2CEDE0E9005E6652 /* AppDelegate.swift in Sources */,
 				655EE2A02CEDE3DE005E6652 /* MainViewController.swift in Sources */,
+				65769BC62CF0B86C0014C1A2 /* ToDosRepository.swift in Sources */,
 				655EE27C2CEDE0E9005E6652 /* SceneDelegate.swift in Sources */,
 				655EE2842CEDE0E9005E6652 /* DNSToDoList.xcdatamodeld in Sources */,
 			);
@@ -377,7 +405,6 @@
 				INFOPLIST_FILE = DNSToDoList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -409,7 +436,6 @@
 				INFOPLIST_FILE = DNSToDoList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
