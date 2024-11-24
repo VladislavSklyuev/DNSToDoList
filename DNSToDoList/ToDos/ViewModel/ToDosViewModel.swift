@@ -26,22 +26,18 @@ final class ToDosViewModel {
                 default: break
                 }
             } receiveValue: { [weak self] todos in
-                todos.forEach { todo in
-                    print(todo.id)
-                }
                 self?.todos.removeAll()
                 self?.todos = todos
             }
             .store(in: &cancellables)
     }
     
-    // MARK: - Надо ли?
     func errorBinding() {
         $errorMessage
             .receive(on: DispatchQueue.main)
             .sink { errorMessage in
                 if errorMessage != nil {
-                    print("Error: (message)")
+                    print("Error: \(String(describing: errorMessage))")
                 }
             }
             .store(in: &cancellables)

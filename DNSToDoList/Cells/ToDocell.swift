@@ -51,15 +51,7 @@ final class ToDoCell: UITableViewCell {
     func configureCell(toDoTitle: String, toDoStatus: String, date: Date) {
         briefDescriptionOfTheTodoLabel.text = toDoTitle
         todoStatusLabel.text = toDoStatus
-        dateAndTimeTheToDoWasCreatedLabel.text = convert(date: date)
-    }
-    
-    // TODO: Убрать остюда
-    func convert(date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let dateString = formatter.string(from: date)
-        return dateString
+        dateAndTimeTheToDoWasCreatedLabel.text = date.convert(date: date)
     }
     
     required init?(coder: NSCoder) {

@@ -7,7 +7,6 @@ struct ToDo: Identifiable, Equatable {
     var status: Status
     let dateAndTimeTheToDoWasCreated: Date
     
-    // TODO: Должно быть тут?
     enum Status: String {
         case newToDo = "Новая задача"
         case inWork = "В работе"
