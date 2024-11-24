@@ -3,7 +3,7 @@ import CoreData
 
 protocol ToDoServiceProtocol {
     func fetchToDos() -> AnyPublisher<[ToDo], Error>
-    func saveToDos(_ toDos: [ToDo])
+    func saveToDo(_ toDo: ToDo)
     func deleteToDo(withId id: Int)
     func updateTodo(_ todo: ToDo)
 }
@@ -16,7 +16,7 @@ final class CoreDataManager: ToDoServiceProtocol {
         self.coreDataStack = coreDataStack
     }
     
-    // MARK: - Получение сущностей
+    // MARK: - Получение задач
     func fetchToDos() -> AnyPublisher<[ToDo], Error> {
         let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         
@@ -40,32 +40,31 @@ final class CoreDataManager: ToDoServiceProtocol {
 }
 
 extension CoreDataManager {
-    // MARK: - Сохранение сущностей
-    func saveToDos(_ toDos: [ToDo]) {
-        toDos.forEach { toDoToSave in
+    // MARK: - Сохранение задач
+    func saveToDo(_ toDo: ToDo) {
             let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
-            let predicate = NSPredicate(format: "id == %d", Int32(toDoToSave.id))
+            let predicate = NSPredicate(format: "id == %d", Int32(toDo.id))
             request.predicate = predicate
             do {
-                let objects = try coreDataStack.backgroundContext.fetch(request).first
-                if objects == nil {
+                let object = try coreDataStack.backgroundContext.fetch(request).first
+                if object == nil {
                     coreDataStack.backgroundContext.perform {
                         let savingToDo = ToDoCoreDataModel(context: self.coreDataStack.backgroundContext)
-                        savingToDo.id  = Int32(toDoToSave.id)
-                        savingToDo.toDo = toDoToSave.toDo
-                        savingToDo.desc = toDoToSave.description
-                        savingToDo.status = toDoToSave.status.rawValue
-                        savingToDo.dateAndTimeTheToDoWasCreated = toDoToSave.dateAndTimeTheToDoWasCreated
+                        savingToDo.id  = Int32(toDo.id)
+                        savingToDo.toDo = toDo.toDo
+                        savingToDo.desc = toDo.description
+                        savingToDo.status = toDo.status.rawValue
+                        savingToDo.dateAndTimeTheToDoWasCreated = toDo.dateAndTimeTheToDoWasCreated
                         self.coreDataStack.saveChanges()
                     }
                 }
             } catch {
                 print("Error saving")
             }
-        }
+        
     }
     
-    // MARK: - Удаление сущностей
+    // MARK: - Удаление задач
     func deleteToDo(withId id: Int) {
         let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         let predicate = NSPredicate(format: "id == %d", Int32(id))
@@ -86,7 +85,7 @@ extension CoreDataManager {
         }
     }
     
-    // MARK: - Обновление сущностей
+    // MARK: - Обновление задач
     func updateTodo(_ todo: ToDo) {
         let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         let predicate = NSPredicate(format: "id == %d", Int32(todo.id))

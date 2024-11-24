@@ -175,7 +175,7 @@ private extension MainViewController {
                 // TODO: Возможно убрать во ViewModel
                 let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
                 self.viewModel.todos.append(newTodo)
-                self.viewModel.saveToDos()
+                self.viewModel.saveToDo()
             }
             
             let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)

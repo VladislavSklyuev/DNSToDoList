@@ -12,8 +12,8 @@ class ToDosRepository: ToDoRepositoryProtocol {
         return toDoService.fetchToDos()
     }
     
-    func saveToDos(_ todos: [ToDo]) {
-        toDoService.saveToDos(todos)
+    func saveToDo(_ todo: ToDo) {
+        toDoService.saveToDo(todo)
     }
     
     func deleteToDo(withId id: Int) {

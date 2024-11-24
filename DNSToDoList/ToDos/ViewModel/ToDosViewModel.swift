@@ -11,7 +11,6 @@ final class ToDosViewModel {
     init(toDoRepository: ToDoRepositoryProtocol) {
         self.toDoRepository = toDoRepository
         fetchToDos()
-        saveToDos()
         errorBinding()
     }
     
@@ -43,8 +42,9 @@ final class ToDosViewModel {
             .store(in: &cancellables)
     }
     
-    func saveToDos() {
-        toDoRepository.saveToDos(todos)
+    func saveToDo() {
+        guard let item = todos.last else { return }
+        toDoRepository.saveToDo(item)
     }
     
     func deleteToDo(withId id: Int) {
