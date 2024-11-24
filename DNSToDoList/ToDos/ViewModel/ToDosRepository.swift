@@ -4,8 +4,8 @@ class ToDosRepository: ToDoRepositoryProtocol {
     
     private let toDoService: ToDoServiceProtocol
     
-    init(userService: ToDoServiceProtocol) {
-        self.toDoService = userService
+    init(todoService: ToDoServiceProtocol) {
+        self.toDoService = todoService
     }
     
     func getToDos() -> AnyPublisher<[ToDo], Error> {

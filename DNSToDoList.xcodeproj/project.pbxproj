@@ -82,7 +82,6 @@
 				65A213EA2CF364BB003E1899 /* Helpers */,
 				655EE2922CEDE196005E6652 /* UIKitSupport */,
 				655EE2912CEDE180005E6652 /* CoreData */,
-				655EE2992CEDE297005E6652 /* Cells */,
 				655EE29C2CEDE353005E6652 /* ToDos */,
 				655EE2852CEDE0EC005E6652 /* Assets.xcassets */,
 				655EE2872CEDE0EC005E6652 /* LaunchScreen.storyboard */,
@@ -133,6 +132,7 @@
 			children = (
 				655EE2AD2CEDF792005E6652 /* Model */,
 				655EE2AE2CEDF799005E6652 /* View */,
+				655EE2992CEDE297005E6652 /* Cells */,
 				655EE2AF2CEDF7A3005E6652 /* ViewModel */,
 			);
 			path = ToDos;

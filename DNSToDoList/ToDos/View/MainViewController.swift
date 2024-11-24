@@ -3,7 +3,7 @@ import Combine
 
 final class MainViewController: UIViewController {
     
-    private var viewModel: ToDosViewModel = ToDosViewModel(toDoRepository: ToDosRepository(userService: CoreDataManager(coreDataStack: CoreDataStack())))
+    var viewModel: ToDosViewModel!
     private var cancellables = Set<AnyCancellable>()
 
     private enum SizeConstants {
