@@ -21,19 +21,19 @@ final class CoreDataManager: ToDoServiceProtocol {
         let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         
         return Future { promise in
-            do {
-                let objects = try self.coreDataStack.managedObjectContext.fetch(request)
-                let newOb = objects.compactMap { todo -> ToDo? in
-                    guard let toDo = todo.toDo,
-                        let desc = todo.desc,
-                        let status = todo.status,
-                        let date = todo.dateAndTimeTheToDoWasCreated else { return nil }
-                    return ToDo(id: Int(todo.id), toDo: toDo, description: desc, status: ToDo.Status(rawValue: status)!, dateAndTimeTheToDoWasCreated: date)
+                do {
+                    let objects = try self.coreDataStack.managedObjectContext.fetch(request)
+                    let newOb = objects.compactMap { todo -> ToDo? in
+                        guard let toDo = todo.toDo,
+                              let desc = todo.desc,
+                              let status = todo.status,
+                              let date = todo.dateAndTimeTheToDoWasCreated else { return nil }
+                        return ToDo(id: Int(todo.id), toDo: toDo, description: desc, status: ToDo.Status(rawValue: status)!, dateAndTimeTheToDoWasCreated: date)
+                    }
+                    promise(.success(newOb))
+                } catch {
+                    promise(.failure(error))
                 }
-                promise(.success(newOb))
-            } catch {
-                promise(.failure(error))
-            }
         }
         .eraseToAnyPublisher()
     }
@@ -43,12 +43,11 @@ extension CoreDataManager {
     // MARK: - Сохранение сущностей
     func saveToDos(_ toDos: [ToDo]) {
         toDos.forEach { toDoToSave in
-            let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
+            let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
             let predicate = NSPredicate(format: "id == %d", Int32(toDoToSave.id))
             request.predicate = predicate
             do {
-                let objects = try coreDataStack.managedObjectContext.fetch(request).first
-                print("CoreDataObjects: \(String(describing: objects))")
+                let objects = try coreDataStack.backgroundContext.fetch(request).first
                 if objects == nil {
                     coreDataStack.backgroundContext.perform {
                         let savingToDo = ToDoCoreDataModel(context: self.coreDataStack.backgroundContext)
@@ -68,38 +67,40 @@ extension CoreDataManager {
     
     // MARK: - Удаление сущностей
     func deleteToDo(withId id: Int) {
-        let request = NSFetchRequest<NSManagedObject>(entityName: String(describing: ToDoCoreDataModel.self))
+        let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
         let predicate = NSPredicate(format: "id == %d", Int32(id))
         request.predicate = predicate
         
         do {
-            let results = try coreDataStack.managedObjectContext.fetch(request)
+            let results = try coreDataStack.backgroundContext.fetch(request)
             
             if let itemToDelete = results.first {
-                coreDataStack.managedObjectContext.delete(itemToDelete)
-                try coreDataStack.managedObjectContext.save()
-                print("Item with ID (id) deleted successfully.")
+                coreDataStack.backgroundContext.delete(itemToDelete)
+                coreDataStack.saveChanges()
+                print("Item with ID \(id) deleted successfully.")
             } else {
-                print("No item found with ID (id).")
+                print("No item found with ID \(id).")
             }
         } catch {
-            print("Error fetching or deleting item: (error)")
+            print("Error fetching or deleting item: \(error.localizedDescription)")
         }
     }
     
+    // MARK: - Обновление сущностей
     func updateTodo(_ todo: ToDo) {
-        let fetchRequest: NSFetchRequest<ToDoCoreDataModel> = ToDoCoreDataModel.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", Int32(todo.id))
+        let request = NSFetchRequest<ToDoCoreDataModel>(entityName: String(describing: ToDoCoreDataModel.self))
+        let predicate = NSPredicate(format: "id == %d", Int32(todo.id))
+        request.predicate = predicate
         
         do {
-            let results = try coreDataStack.managedObjectContext.fetch(fetchRequest)
+            let results = try coreDataStack.backgroundContext.fetch(request)
             if let toDoEntity = results.first {
                 toDoEntity.status = todo.status.rawValue
-                try coreDataStack.managedObjectContext.save()
+                coreDataStack.saveChanges()
                 print("Обновление сущности успешно")
             }
         } catch {
-            print("Ошибка при обновлении: (error)")
+            print("Ошибка при обновлении: \(error.localizedDescription)")
         }
     }
 }
