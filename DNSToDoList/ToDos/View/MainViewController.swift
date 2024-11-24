@@ -7,7 +7,6 @@ final class MainViewController: UIViewController {
     private var viewModel: ToDosViewModel = ToDosViewModel(toDoRepository: ToDosRepository(userService: CoreDataManager(coreDataStack: CoreDataStack())))
     private var cancellables = Set<AnyCancellable>()
 
-    // TODO: - строковые литералы в константы
     private enum SizeConstants {
         static let heightForRowAt: CGFloat = 80
         static let titleLabelTopAnchor: CGFloat = 24
@@ -22,7 +21,7 @@ final class MainViewController: UIViewController {
         $0.text = "Задачи"
         $0.font = UIFont.boldSystemFont(ofSize: 28)
         $0.textAlignment = .left
-        $0.textColor = .white
+        $0.textColor = .black
         return $0
     }(UILabel())
     
@@ -34,7 +33,7 @@ final class MainViewController: UIViewController {
     lazy var tableView: UITableView = {
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .black
+        $0.backgroundColor = .white
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.reuseIdentifier)
         return $0
@@ -42,7 +41,7 @@ final class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        view.backgroundColor = .white
         setConstraints()
         creatingNewTodo()
         setupBindings()
@@ -57,7 +56,7 @@ final class MainViewController: UIViewController {
             if let indexPath = tableView.indexPathForRow(at: location) {
                 
                 if let cell = tableView.cellForRow(at: indexPath) {
-                    cell.backgroundColor = .gray
+                    cell.backgroundColor = .lightGray
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.showAlert(forItemAt: indexPath)
@@ -71,7 +70,7 @@ final class MainViewController: UIViewController {
             let location = gesture.location(in: tableView)
             if let indexPath = tableView.indexPathForRow(at: location) {
                 if let cell = tableView.cellForRow(at: indexPath) {
-                    cell.backgroundColor = .black
+                    cell.backgroundColor = .white
                 }
             }
         }
@@ -79,7 +78,9 @@ final class MainViewController: UIViewController {
     
     //TODO: Переделать на отдельную View с выбором детализации и изменения статуса
     private func showAlert(forItemAt indexPath: IndexPath) {
-        let alert = UIAlertController(title: "\(viewModel.todos[indexPath.row].toDo)", message: "\(viewModel.todos[indexPath.row].description)\n\(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "\(viewModel.todos[indexPath.row].toDo)", 
+                                      message: "\(viewModel.todos[indexPath.row].description)\n\(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)",
+                                      preferredStyle: .alert)
         
         let currentStatusToDo = viewModel.todos[indexPath.row].status
         
@@ -210,7 +211,7 @@ extension MainViewController: UITableViewDataSource {
         }
         
         cell.configureCell(toDoTitle: viewModel.todos[indexPath.row].toDo, toDoStatus: viewModel.todos[indexPath.row].status.rawValue, date: viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated)
-        cell.backgroundColor = .black
+        cell.backgroundColor = .clear
         cell.selectionStyle = .none
         return cell
     }
@@ -227,16 +228,4 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print("Выбрано: \(viewModel.todos[indexPath.row])")
     }
-    
-    // Удаление ячейки по свайпу
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        guard viewModel.todos[indexPath.row].status.rawValue == "Новая задача" else { return }
-//        if editingStyle == .delete {
-//            let itemToDelete = viewModel.todos[indexPath.row]
-//            guard let index = viewModel.todos.firstIndex(of: itemToDelete) else { return }
-//            viewModel.todos.remove(at: index)
-//            viewModel.deleteToDo(withId: itemToDelete.id)
-//            tableView.deleteRows(at: [indexPath], with: .automatic)
-//        }
-//    }
 }
