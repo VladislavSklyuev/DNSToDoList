@@ -2,7 +2,7 @@ import CoreData
 
 final class CoreDataStack {
     
-    private(set) lazy var persistentContainer: NSPersistentContainer = {
+    private lazy var persistentContainer: NSPersistentContainer = {
         $0.loadPersistentStores { description, error in
             if let error {
                 fatalError("Core data: \(error), \(error.localizedDescription)")
