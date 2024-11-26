@@ -105,7 +105,10 @@ final class MainViewController: UIViewController {
         
         let selectedTodo = viewModel.todos[indexPath.row]
         
-        let changeTodoStatus = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
+        let takeOnTodo = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
+            self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
+        }
+        let completeTheTodo = UIAlertAction(title: NamesTodoActionButtons.execute, style: .default) { _ in
             self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
         }
         
@@ -120,12 +123,12 @@ final class MainViewController: UIViewController {
         switch selectedTodo.status {
             
         case .newToDo:
-            alert.addAction(changeTodoStatus)
+            alert.addAction(takeOnTodo)
             alert.addAction(deleteAction)
             alert.addAction(cancelAction)
             
         case .inWork:
-            alert.addAction(changeTodoStatus)
+            alert.addAction(completeTheTodo)
             alert.addAction(cancelAction)
             
         case .completed:
