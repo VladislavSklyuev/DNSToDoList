@@ -105,38 +105,30 @@ final class MainViewController: UIViewController {
         
         let selectedTodo = viewModel.todos[indexPath.row]
         
+        let changeTodoStatus = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
+            self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
+        }
+        
+        let deleteAction = UIAlertAction(title: NamesTodoActionButtons.deleteTodo, style: .destructive) { _ in
+            self.viewModel.delete(selectedTodo)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        
+        let okAction = UIAlertAction(title: NamesTodoActionButtons.ok, style: .default) { _ in }
+        let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
+        
         switch selectedTodo.status {
             
         case .newToDo:
-            
-            let takeOnTodo = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
-                self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
-            }
-            
-            let deleteAction = UIAlertAction(title: NamesTodoActionButtons.deleteTodo, style: .destructive) { _ in
-                self.viewModel.delete(selectedTodo)
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
-            }
-            
-            let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
-            
-            alert.addAction(takeOnTodo)
+            alert.addAction(changeTodoStatus)
             alert.addAction(deleteAction)
             alert.addAction(cancelAction)
             
         case .inWork:
-
-            let completeTheToDo = UIAlertAction(title: NamesTodoActionButtons.execute, style: .default) { _ in
-                self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
-            }
-            
-            let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
-            alert.addAction(completeTheToDo)
+            alert.addAction(changeTodoStatus)
             alert.addAction(cancelAction)
             
         case .completed:
-            
-            let okAction = UIAlertAction(title: NamesTodoActionButtons.ok, style: .default) { _ in }
             alert.addAction(okAction)
         }
         present(alert, animated: true)
