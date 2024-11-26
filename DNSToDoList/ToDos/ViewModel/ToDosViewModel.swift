@@ -5,17 +5,17 @@ final class ToDosViewModel {
     @Published var todos: [ToDo] = []
     @Published var errorMessage: String?
     
-    private let toDoRepository: ToDoRepositoryProtocol
+    private let toDoService: ToDoRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(toDoRepository: ToDoRepositoryProtocol) {
-        self.toDoRepository = toDoRepository
+        self.toDoService = toDoRepository
         fetchToDos()
         errorBinding()
     }
     
     private func fetchToDos() {
-        toDoRepository
+        toDoService
             .getToDos()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -65,16 +65,16 @@ final class ToDosViewModel {
     }
     func saveToDo() {
         guard let item = todos.last else { return }
-        toDoRepository.saveToDo(item)
+        toDoService.saveToDo(item)
     }
     
     func delete(_ todo: ToDo) {
         guard let index = todos.firstIndex(of: todo) else { return }
         todos.remove(at: index)
-        toDoRepository.deleteToDo(withId: todo.id)
+        toDoService.deleteToDo(withId: todo.id)
     }
     
     func update(_ todo: ToDo) {
-        toDoRepository.updateTodo(todo)
+        toDoService.updateTodo(todo)
     }
 }
