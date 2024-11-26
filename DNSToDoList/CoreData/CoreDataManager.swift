@@ -10,7 +10,7 @@ protocol ToDoServiceProtocol {
 
 final class CoreDataManager: ToDoServiceProtocol {
     
-    let coreDataStack: CoreDataStack
+    private let coreDataStack: CoreDataStack
     
     init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
