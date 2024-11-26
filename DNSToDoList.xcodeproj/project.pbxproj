@@ -132,7 +132,6 @@
 			children = (
 				655EE2AD2CEDF792005E6652 /* Model */,
 				655EE2AE2CEDF799005E6652 /* View */,
-				655EE2992CEDE297005E6652 /* Cells */,
 				655EE2AF2CEDF7A3005E6652 /* ViewModel */,
 			);
 			path = ToDos;
@@ -150,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				655EE29F2CEDE3DE005E6652 /* MainViewController.swift */,
+				655EE2992CEDE297005E6652 /* Cells */,
 			);
 			path = View;
 			sourceTree = "<group>";

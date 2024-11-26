@@ -1,6 +1,5 @@
 import UIKit
 
-
 final class ToDoCell: UITableViewCell {
     
     private enum SizeConstants {
@@ -14,7 +13,6 @@ final class ToDoCell: UITableViewCell {
         static let vStackLeadingAnchor: CGFloat = 8
     }
     
-    // TODO: Проверить все отступы и размеры шрифтов
     @Autolayout private var descriptionLabel: UILabel = {
         $0.font = UIFont.systemFont(ofSize: SizeConstants.descriptionLabelSize)
         $0.textAlignment = .left

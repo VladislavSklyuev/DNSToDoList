@@ -240,9 +240,4 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return SizeConstants.heightForRowAt
     }
-    
-    // Обработка выбора ячейки
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //print("Выбрано: \(viewModel.todos[indexPath.row])")
-    }
 }
