@@ -42,16 +42,39 @@ final class ToDosViewModel {
             .store(in: &cancellables)
     }
     
+    func creatingNewTodo(_ todo: String?, _ description: String?) {
+        guard let todo = todo,
+              let description = description else { return }
+        guard !todo.isEmpty && !description.isEmpty else { return }
+        let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
+        todos.append(newTodo)
+        saveToDo()
+    }
+    
+    func changeStatusFor(_ todo: ToDo, _ index: Int) {
+        switch todo.status {
+        case .newToDo:
+            todos[index].status = .inWork
+            update(todos[index])
+        case .inWork:
+            todos[index].status = .completed
+            update(todos[index])
+        case .completed:
+            break
+        }
+    }
     func saveToDo() {
         guard let item = todos.last else { return }
         toDoRepository.saveToDo(item)
     }
     
-    func deleteToDo(withId id: Int) {
-        toDoRepository.deleteToDo(withId: id)
+    func delete(_ todo: ToDo) {
+        guard let index = todos.firstIndex(of: todo) else { return }
+        todos.remove(at: index)
+        toDoRepository.deleteToDo(withId: todo.id)
     }
     
-    func updateToDo(_ todo: ToDo) {
+    func update(_ todo: ToDo) {
         toDoRepository.updateTodo(todo)
     }
 }
