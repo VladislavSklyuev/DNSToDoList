@@ -94,6 +94,7 @@ final class MainViewController: UIViewController {
         }
     }
     
+    // MARK: - Просмотр задачи и изменение её статуса
     private func showAlert(forItemAt indexPath: IndexPath) {
         let alertTitle = viewModel.todos[indexPath.row].toDo
         let alertMessage = "\(viewModel.todos[indexPath.row].description)\n\(viewModel.todos[indexPath.row].dateAndTimeTheToDoWasCreated.toString())"
@@ -104,46 +105,30 @@ final class MainViewController: UIViewController {
         
         let selectedTodo = viewModel.todos[indexPath.row]
         
+        let changeTodoStatus = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
+            self.viewModel.changeStatusFor(selectedTodo, indexPath.row)
+        }
+        
+        let deleteAction = UIAlertAction(title: NamesTodoActionButtons.deleteTodo, style: .destructive) { _ in
+            self.viewModel.delete(selectedTodo)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        
+        let okAction = UIAlertAction(title: NamesTodoActionButtons.ok, style: .default) { _ in }
+        let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
+        
         switch selectedTodo.status {
             
         case .newToDo:
-            
-            let takeOnTodo = UIAlertAction(title: NamesTodoActionButtons.getToWork, style: .default) { _ in
-                var todo = self.viewModel.todos[indexPath.row]
-                todo.status = .inWork
-                self.viewModel.todos[indexPath.row].status = .inWork
-                self.viewModel.updateToDo(todo)
-            }
-            
-            let deleteAction = UIAlertAction(title: NamesTodoActionButtons.deleteTodo, style: .destructive) { _ in
-                guard let index = self.viewModel.todos.firstIndex(of: selectedTodo) else { return }
-                self.viewModel.todos.remove(at: index)
-                self.viewModel.deleteToDo(withId: selectedTodo.id)
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
-            }
-            
-            let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
-            
-            alert.addAction(takeOnTodo)
+            alert.addAction(changeTodoStatus)
             alert.addAction(deleteAction)
             alert.addAction(cancelAction)
             
         case .inWork:
-
-            let completeTheToDo = UIAlertAction(title: NamesTodoActionButtons.execute, style: .default) { _ in
-                self.viewModel.todos[indexPath.row].status = .completed
-                var todo = self.viewModel.todos[indexPath.row]
-                todo.status = .completed
-                self.viewModel.updateToDo(todo)
-            }
-            
-            let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel) { _ in }
-            alert.addAction(completeTheToDo)
+            alert.addAction(changeTodoStatus)
             alert.addAction(cancelAction)
             
         case .completed:
-            
-            let okAction = UIAlertAction(title: NamesTodoActionButtons.ok, style: .default) { _ in }
             alert.addAction(okAction)
         }
         present(alert, animated: true)
@@ -187,13 +172,7 @@ private extension MainViewController {
             }
             
             let okAction = UIAlertAction(title: NamesTodoActionButtons.addTodo, style: .default) { _ in
-                guard let todo = alert.textFields![0].text,
-                      let description = alert.textFields![1].text else { return }
-                guard !todo.isEmpty && !description.isEmpty else { return } // TODO: Можно придумать логику при отсутствии значений
-                
-                let newTodo = ToDo(id: Int.random(in: 1...999), toDo: todo, description: description, status: .newToDo, dateAndTimeTheToDoWasCreated: .now)
-                self.viewModel.todos.append(newTodo)
-                self.viewModel.saveToDo()
+                self.viewModel.creatingNewTodo(alert.textFields![0].text, alert.textFields![1].text)
             }
             
             let cancelAction = UIAlertAction(title: NamesTodoActionButtons.cancel, style: .cancel)

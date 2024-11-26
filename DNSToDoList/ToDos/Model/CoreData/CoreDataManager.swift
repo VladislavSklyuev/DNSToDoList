@@ -1,13 +1,6 @@
 import Combine
 import CoreData
 
-protocol ToDoServiceProtocol {
-    func fetchToDos() -> AnyPublisher<[ToDo], Error>
-    func saveToDo(_ toDo: ToDo)
-    func deleteToDo(withId id: Int)
-    func updateTodo(_ todo: ToDo)
-}
-
 final class CoreDataManager: ToDoServiceProtocol {
     
     private let coreDataStack: CoreDataStack
